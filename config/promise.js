@@ -4,12 +4,12 @@ var query = require("./mysqlPool");
  * @param {*} options  mysql 语句块
  */
 function getServer(options) {
-    var promise = new Promise((resolve, reject) => {
+    var promise = new Promise((res, rej) => {
         query(options, function (err, results, fields) {
             if (err) {
-                reject(err);
+                rej(err);
             } else {
-                resolve(err,results,fields);
+                res(results);
             };
         });
     });
