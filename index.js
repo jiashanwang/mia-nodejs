@@ -64,6 +64,7 @@ app.use(bodyParser.urlencoded({ extended: true }));
 
 app.post("/saveInfo", function (req, res, next) {
     var params = req.body;
+    console.log(params);
     var options = {
         sql: "select * from domain where domain = ?",
         values: [params.username]
@@ -135,31 +136,31 @@ app.post("/queryByDateType", function (req, res, next) {
                 case "1":
                     if (params.status == "amount") {
                         // 按照金额来排序
-                        sql = "select sum(totalPrice) AS totalPrice,sum(number) AS number,username,userid,round(sum(rebate)) AS rebate from userinfo where date_format(datetimes,'%Y-%m-%d') = date_format(now(),'%Y-%m-%d') and domain_id=" + domainId + " group by userid ORDER BY totalPrice DESC";
+                        sql = "select sum(totalPrice) AS totalPrice,sum(number) AS number,username,userid,round(sum(number*rebate)) AS totalRebate from userinfo where date_format(datetimes,'%Y-%m-%d') = date_format(now(),'%Y-%m-%d') and domain_id=" + domainId + " group by userid ORDER BY totalPrice DESC";
                     } else {
                         //按照消费笔数来排序
-                        sql = "select sum(totalPrice) AS totalPrice,sum(number) AS number,username,userid,round(sum(rebate)) AS rebate from userinfo where date_format(datetimes,'%Y-%m-%d') = date_format(now(),'%Y-%m-%d') and domain_id=" + domainId + " group by userid ORDER BY number DESC";
+                        sql = "select sum(totalPrice) AS totalPrice,sum(number) AS number,username,userid,round(sum(number*rebate)) AS totalRebate from userinfo where date_format(datetimes,'%Y-%m-%d') = date_format(now(),'%Y-%m-%d') and domain_id=" + domainId + " group by userid ORDER BY number DESC";
                     };
                     break;
                 case "2":
                     if (params.status == "amount") {
-                        sql = "SELECT sum(totalPrice) AS totalPrice,sum(number) AS number,username,userid,round(sum(rebate)) AS rebate FROM userinfo WHERE YEARWEEK(date_format(datetimes,'%Y-%m-%d')) = YEARWEEK(now()) and domain_id=" + domainId + " group by userid ORDER BY totalPrice DESC";
+                        sql = "SELECT sum(totalPrice) AS totalPrice,sum(number) AS number,username,userid,round(sum(number*rebate)) AS totalRebate FROM userinfo WHERE YEARWEEK(date_format(datetimes,'%Y-%m-%d')) = YEARWEEK(now()) and domain_id=" + domainId + " group by userid ORDER BY totalPrice DESC";
                     } else {
-                        sql = "SELECT sum(totalPrice) AS totalPrice,sum(number) AS number,username,userid,round(sum(rebate)) AS rebate FROM userinfo WHERE YEARWEEK(date_format(datetimes,'%Y-%m-%d')) = YEARWEEK(now()) and domain_id=" + domainId + " group by userid ORDER BY number DESC";
+                        sql = "SELECT sum(totalPrice) AS totalPrice,sum(number) AS number,username,userid,round(sum(number*rebate)) AS totalRebate FROM userinfo WHERE YEARWEEK(date_format(datetimes,'%Y-%m-%d')) = YEARWEEK(now()) and domain_id=" + domainId + " group by userid ORDER BY number DESC";
                     }
                     break;
                 case "3":
                     if (params.status == "amount") {
-                        sql = "SELECT sum(totalPrice) AS totalPrice,sum(number) AS number,username,userid,round(sum(rebate)) AS rebate FROM userinfo WHERE DATE_FORMAT( datetimes, '%Y%m' ) = DATE_FORMAT( CURDATE( ) , '%Y%m' ) and domain_id=" + domainId + " group by userid ORDER BY totalPrice DESC";
+                        sql = "SELECT sum(totalPrice) AS totalPrice,sum(number) AS number,username,userid,round(sum(number*rebate)) AS totalRebate FROM userinfo WHERE DATE_FORMAT( datetimes, '%Y%m' ) = DATE_FORMAT( CURDATE( ) , '%Y%m' ) and domain_id=" + domainId + " group by userid ORDER BY totalPrice DESC";
                     } else {
-                        sql = "SELECT sum(totalPrice) AS totalPrice,sum(number) AS number,username,userid,round(sum(rebate)) AS rebate FROM userinfo WHERE DATE_FORMAT( datetimes, '%Y%m' ) = DATE_FORMAT( CURDATE( ) , '%Y%m' ) and domain_id=" + domainId + " group by userid ORDER BY number DESC";
+                        sql = "SELECT sum(totalPrice) AS totalPrice,sum(number) AS number,username,userid,round(sum(number*rebate)) AS totalRebate FROM userinfo WHERE DATE_FORMAT( datetimes, '%Y%m' ) = DATE_FORMAT( CURDATE( ) , '%Y%m' ) and domain_id=" + domainId + " group by userid ORDER BY number DESC";
                     }
                     break;
                 case "4":
                     if (params.status == "amount") {
-                        sql = "select sum(totalPrice) AS totalPrice,sum(number) AS number,username,userid,round(sum(rebate)) AS rebate from userinfo where YEAR(datetimes)=YEAR(NOW()) and domain_id=" + domainId + " group by userid ORDER BY totalPrice DESC";
+                        sql = "select sum(totalPrice) AS totalPrice,sum(number) AS number,username,userid,round(sum(number*rebate)) AS totalRebate from userinfo where YEAR(datetimes)=YEAR(NOW()) and domain_id=" + domainId + " group by userid ORDER BY totalPrice DESC";
                     } else {
-                        sql = "select sum(totalPrice) AS totalPrice,sum(number) AS number,username,userid,round(sum(rebate)) AS rebate from userinfo where YEAR(datetimes)=YEAR(NOW()) and domain_id=" + domainId + " group by userid ORDER BY number DESC";
+                        sql = "select sum(totalPrice) AS totalPrice,sum(number) AS number,username,userid,round(sum(number*rebate)) AS totalRebate from userinfo where YEAR(datetimes)=YEAR(NOW()) and domain_id=" + domainId + " group by userid ORDER BY number DESC";
                     }
                     break;
             };
@@ -185,7 +186,6 @@ app.post("/queryByDateType", function (req, res, next) {
  */
 app.post("/getByPhone", function (req, res) {
     var params = req.body;
-    console.log(params)
     var options = {
         sql: "select product,number,price,totalPrice,date_format(datetimes,'%m-%d') as datetimes,rebate from userInfo where userid = ?",
         values: [params.userid]
