@@ -221,11 +221,16 @@ app.post("/queryByDateType", function (req, res, next) {
  */
 app.post("/getByPhone", function (req, res) {
     var params = req.body;
+    console.log("getByPhone 的接收参数为：");
+    console.log(params);
     var options = {
         sql: "select product,number,price,totalPrice,date_format(datetimes,'%m-%d') as datetimes,rebate from userInfo where userid = ?",
         values: [params.userid]
     };
     query(options, function (err, result, fields) {
+        console.log("getByPhone 返回值为：");
+        console.log(err);
+        console.log(result);
         if (!err) {
             res.json({
                 statusCode: 200,
