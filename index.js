@@ -64,7 +64,6 @@ app.use(bodyParser.urlencoded({ extended: true }));
 
 app.post("/saveInfo", function (req, res, next) {
     var params = req.body;
-    console.log(params);
     var options = {
         sql: "select * from domain where domain = ?",
         values: [params.username]
@@ -116,13 +115,7 @@ app.post("/queryByDateType", function (req, res, next) {
     var params = req.body;
     var dateType = params.dateType;
     var wxName = params.wxName;
-    console.log("querybydatetype 根据时间类型查询的结果为：");
-
-
-    console.log(params);
-
     var sql;
-
     var options = {
         sql: "select * from domain where domain = ?",
         values: [params.domainId]
@@ -136,8 +129,6 @@ app.post("/queryByDateType", function (req, res, next) {
                 msg: "暂无信息"
             });
         } else {
-            console.log("result 职位：");
-            console.log(result);
             var domainId = result[0].id;
             if (wxName) {
                 // 根据搜索的名字进行模糊匹配
@@ -145,31 +136,31 @@ app.post("/queryByDateType", function (req, res, next) {
                     case "1":
                         if (params.status == "amount") {
                             // 按照金额来排序
-                            sql = "select sum(totalPrice) AS totalPrice,sum(number) AS number,username,userid,round(sum(number*rebate)) AS totalRebate from userinfo where date_format(datetimes,'%Y-%m-%d') = date_format(now(),'%Y-%m-%d') and username like " + wxName + "and domain_id=" + domainId + " group by userid ORDER BY totalPrice DESC";
+                            sql = "select sum(totalPrice) AS totalPrice,sum(number) AS number,username,userid,round(sum(number*rebate)) AS totalRebate from userinfo where date_format(datetimes,'%Y-%m-%d') = date_format(now(),'%Y-%m-%d') and username like '%" + wxName + "%' and domain_id=" + domainId + " group by userid ORDER BY totalPrice DESC";
                         } else {
                             //按照消费笔数来排序
-                            sql = "select sum(totalPrice) AS totalPrice,sum(number) AS number,username,userid,round(sum(number*rebate)) AS totalRebate from userinfo where date_format(datetimes,'%Y-%m-%d') = date_format(now(),'%Y-%m-%d') and username like " + wxName + "and domain_id=" + domainId + " group by userid ORDER BY number DESC";
+                            sql = "select sum(totalPrice) AS totalPrice,sum(number) AS number,username,userid,round(sum(number*rebate)) AS totalRebate from userinfo where date_format(datetimes,'%Y-%m-%d') = date_format(now(),'%Y-%m-%d') and username like '%" + wxName + "%' and domain_id=" + domainId + " group by userid ORDER BY number DESC";
                         };
                         break;
                     case "2":
                         if (params.status == "amount") {
-                            sql = "SELECT sum(totalPrice) AS totalPrice,sum(number) AS number,username,userid,round(sum(number*rebate)) AS totalRebate FROM userinfo WHERE YEARWEEK(date_format(datetimes,'%Y-%m-%d')) = YEARWEEK(now()) and username like " + wxName + "and domain_id=" + domainId + " group by userid ORDER BY totalPrice DESC";
+                            sql = "SELECT sum(totalPrice) AS totalPrice,sum(number) AS number,username,userid,round(sum(number*rebate)) AS totalRebate FROM userinfo WHERE YEARWEEK(date_format(datetimes,'%Y-%m-%d')) = YEARWEEK(now()) and username like '%" + wxName + "%' and domain_id=" + domainId + " group by userid ORDER BY totalPrice DESC";
                         } else {
-                            sql = "SELECT sum(totalPrice) AS totalPrice,sum(number) AS number,username,userid,round(sum(number*rebate)) AS totalRebate FROM userinfo WHERE YEARWEEK(date_format(datetimes,'%Y-%m-%d')) = YEARWEEK(now()) and username like " + wxName + "and domain_id=" + domainId + " group by userid ORDER BY number DESC";
+                            sql = "SELECT sum(totalPrice) AS totalPrice,sum(number) AS number,username,userid,round(sum(number*rebate)) AS totalRebate FROM userinfo WHERE YEARWEEK(date_format(datetimes,'%Y-%m-%d')) = YEARWEEK(now()) and username like '%" + wxName + "%' and domain_id=" + domainId + " group by userid ORDER BY number DESC";
                         }
                         break;
                     case "3":
                         if (params.status == "amount") {
-                            sql = "SELECT sum(totalPrice) AS totalPrice,sum(number) AS number,username,userid,round(sum(number*rebate)) AS totalRebate FROM userinfo WHERE DATE_FORMAT( datetimes, '%Y%m' ) = DATE_FORMAT( CURDATE( ) , '%Y%m' ) and username like " + wxName + "and domain_id=" + domainId + " group by userid ORDER BY totalPrice DESC";
+                            sql = "SELECT sum(totalPrice) AS totalPrice,sum(number) AS number,username,userid,round(sum(number*rebate)) AS totalRebate FROM userinfo WHERE DATE_FORMAT( datetimes, '%Y%m' ) = DATE_FORMAT( CURDATE( ) , '%Y%m' ) and username like '%" + wxName + "%' and domain_id=" + domainId + " group by userid ORDER BY totalPrice DESC";
                         } else {
-                            sql = "SELECT sum(totalPrice) AS totalPrice,sum(number) AS number,username,userid,round(sum(number*rebate)) AS totalRebate FROM userinfo WHERE DATE_FORMAT( datetimes, '%Y%m' ) = DATE_FORMAT( CURDATE( ) , '%Y%m' ) and username like " + wxName + "and domain_id=" + domainId + " group by userid ORDER BY number DESC";
+                            sql = "SELECT sum(totalPrice) AS totalPrice,sum(number) AS number,username,userid,round(sum(number*rebate)) AS totalRebate FROM userinfo WHERE DATE_FORMAT( datetimes, '%Y%m' ) = DATE_FORMAT( CURDATE( ) , '%Y%m' ) and username like '%" + wxName + "%' and domain_id=" + domainId + " group by userid ORDER BY number DESC";
                         }
                         break;
                     case "4":
                         if (params.status == "amount") {
-                            sql = "select sum(totalPrice) AS totalPrice,sum(number) AS number,username,userid,round(sum(number*rebate)) AS totalRebate from userinfo where YEAR(datetimes)=YEAR(NOW()) and username like " + wxName + "and domain_id=" + domainId + " group by userid ORDER BY totalPrice DESC";
+                            sql = "select sum(totalPrice) AS totalPrice,sum(number) AS number,username,userid,round(sum(number*rebate)) AS totalRebate from userinfo where YEAR(datetimes)=YEAR(NOW()) and username like '%" + wxName + "%' and domain_id=" + domainId + " group by userid ORDER BY totalPrice DESC";
                         } else {
-                            sql = "select sum(totalPrice) AS totalPrice,sum(number) AS number,username,userid,round(sum(number*rebate)) AS totalRebate from userinfo where YEAR(datetimes)=YEAR(NOW()) and username like " + wxName + "and domain_id=" + domainId + " group by userid ORDER BY number DESC";
+                            sql = "select sum(totalPrice) AS totalPrice,sum(number) AS number,username,userid,round(sum(number*rebate)) AS totalRebate from userinfo where YEAR(datetimes)=YEAR(NOW()) and username like '%" + wxName + "%' and domain_id=" + domainId + " group by userid ORDER BY number DESC";
                         }
                         break;
                 };
